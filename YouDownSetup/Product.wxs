@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+	<Product Id="3D6AC6C7-7DE3-4a79-986B-37B8ECAEF58D" Name="YouDown" Language="1033" Version="1.0.2" Manufacturer="KREU" UpgradeCode="8f923f5e-a094-4fb2-87b1-ff70a27531f0">
+		<Package InstallerVersion="300" Compressed="yes" InstallScope="perMachine" />
+
+		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+    
+    <!-- Upgrades -->
+    <Upgrade Id="8f923f5e-a094-4fb2-87b1-ff70a27531f0">
+      <UpgradeVersion Minimum="1.0.0" Maximum="1.9.9" Property="OLDERVERSIONBEINGUPGRADED" />
+    </Upgrade>
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallFinalize"/>
+    </InstallExecuteSequence>
+    
+    <!-- OOO check -->
+    <Upgrade Id="8f923f5e-a094-4fb2-87b1-ff70a27531f0">
+      <UpgradeVersion Minimum="1.0.2" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
+    </Upgrade>
+    <Condition Message="A later version of [ProductName] is already installed. Setup will now exit.">
+      <![CDATA[NOT NEWERVERSIONDETECTED OR Installed]]>
+    </Condition>
+    <CustomActionRef Id="WixExitEarlyWithSuccess"/>
+
+    <!-- dotNET checks -->
+    <PropertyRef Id="NETFRAMEWORK35_SP_LEVEL"/>
+    <Condition Message="This application requires .NET Framework 3.5 SP1. Please install the .NET Framework from http://www.microsoft.com/Net/Download.aspx then run this installer again.">
+      <![CDATA[Installed OR (NETFRAMEWORK35_SP_LEVEL and NOT NETFRAMEWORK35_SP_LEVEL = "#0")]]>
+    </Condition>
+  
+    <!-- Wix Dialogs -->
+    <UI>
+      <UIRef Id="WixUI_InstallDir" />
+      <Publish Dialog="ExitDialog"
+                Control="Finish"
+                Event="DoAction"
+                Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+    </UI>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER" />
+
+    <WixVariable Id="WixUIBannerBmp" Value="WixUIBannerBmp.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="WixUIDialogBmp.bmp" />
+
+    <!-- PerMachine -->
+    <Property Id="ApplicationFolderName" Value="YouDown" />
+    <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+    <WixVariable Id="WixUISupportPerUser" Value="0" />
+    
+    <!-- Post Launch -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch YouDown" />
+    <Property Id="WixShellExecTarget" Value="[#YouDown]" />
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+
+    <!-- ARP -->
+    <Icon Id="AppIcon" SourceFile="$(var.YouDown.TargetDir)Rez\YouDown.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+
+    <!-- Path structures -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="KRFOLDER" Name="KREU">
+          <Directory Id="APPLICATIONFOLDER" Name="YouDown" />
+        </Directory>
+			</Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="YouDown" />
+       </Directory>
+    </Directory>
+
+    <!-- Source files -->
+    <DirectoryRef Id="APPLICATIONFOLDER">
+      <Component Id="YouDownAss" Guid="42f3ee1f-c17b-4f58-90bc-13666964d449">
+        <File Id="YouDown" Name="$(var.YouDown.TargetFileName)" Source="$(var.YouDown.TargetPath)" DiskId="1" KeyPath="yes" Checksum="yes">
+          <netfx:NativeImage Id="ngen_YouDown.exe" Platform="all" Priority="0" AppBaseDirectory="APPLICATIONFOLDER"/>
+        </File>
+        <File Id="WPFToolkit" Name="WPFToolkit.dll" Source="$(var.YouDown.TargetDir)WPFToolkit.dll" DiskId="1">
+          <netfx:NativeImage Id="ngen_WPFToolkit.dll" Platform="all" Priority="0" AppBaseDirectory="APPLICATIONFOLDER"/>
+        </File>
+        <File Id="System.Windows.Controls.Theming" Name="System.Windows.Controls.Theming.dll" Source="$(var.YouDown.TargetDir)System.Windows.Controls.Theming.dll" DiskId="1">
+          <netfx:NativeImage Id="ngen_System.Windows.Controls.Theming.dll" Platform="all" Priority="0" AppBaseDirectory="APPLICATIONFOLDER"/>
+        </File>
+        <File Id="System.Windows.Controls.Theming.ExpressionLight" Name="System.Windows.Controls.Theming.ExpressionLight.dll" Source="$(var.YouDown.TargetDir)System.Windows.Controls.Theming.ExpressionLight.dll" DiskId="1">
+          <netfx:NativeImage Id="ngen_System.Windows.Controls.Theming.ExpressionLight.dll" Platform="all" Priority="0" AppBaseDirectory="APPLICATIONFOLDER"/>
+        </File>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Shortcuts -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="YouDownStart" Guid="D43BA55D-532F-48b6-A478-442E12A930DF">
+        <Shortcut Id="YouDownStartShortcut"
+                  Name="YouDown"
+                  Description="YouTube downloader"
+                  Target="[APPLICATIONFOLDER]YouDown.exe"
+                  WorkingDirectory="APPLICATIONFOLDER"
+                    />
+        <Shortcut Id="UninstallProduct"
+          Name="Uninstall YouDown"
+          Target="[System64Folder]msiexec.exe"
+          Arguments="/x [ProductCode]"
+          Description="Uninstalls YouDown" />
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\KREU\YouDown" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="YouDown" Title="YouDown" Level="1" Absent="disallow">
+		  <ComponentRef Id="YouDownAss" />
+      <ComponentRef Id="YouDownStart" />
+		</Feature>
+	</Product>
+</Wix>
