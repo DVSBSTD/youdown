@@ -1,0 +1,2 @@
+obj\Release\Product.wixobj
+D:\Documents\Visual Studio 2008\Projects\YouDown\YouDownSetup\bin\Release\YouDown.wixpdb
