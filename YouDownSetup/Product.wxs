@@ -75,15 +75,6 @@
         <File Id="YouDown" Name="$(var.YouDown.TargetFileName)" Source="$(var.YouDown.TargetPath)" DiskId="1" KeyPath="yes" Checksum="yes">
           <netfx:NativeImage Id="ngen_YouDown.exe" Platform="all" Priority="0" AppBaseDirectory="APPLICATIONFOLDER"/>
         </File>
-        <File Id="WPFToolkit" Name="WPFToolkit.dll" Source="$(var.YouDown.TargetDir)WPFToolkit.dll" DiskId="1">
-          <netfx:NativeImage Id="ngen_WPFToolkit.dll" Platform="all" Priority="0" AppBaseDirectory="APPLICATIONFOLDER"/>
-        </File>
-        <File Id="System.Windows.Controls.Theming" Name="System.Windows.Controls.Theming.dll" Source="$(var.YouDown.TargetDir)System.Windows.Controls.Theming.dll" DiskId="1">
-          <netfx:NativeImage Id="ngen_System.Windows.Controls.Theming.dll" Platform="all" Priority="0" AppBaseDirectory="APPLICATIONFOLDER"/>
-        </File>
-        <File Id="System.Windows.Controls.Theming.ExpressionLight" Name="System.Windows.Controls.Theming.ExpressionLight.dll" Source="$(var.YouDown.TargetDir)System.Windows.Controls.Theming.ExpressionLight.dll" DiskId="1">
-          <netfx:NativeImage Id="ngen_System.Windows.Controls.Theming.ExpressionLight.dll" Platform="all" Priority="0" AppBaseDirectory="APPLICATIONFOLDER"/>
-        </File>
       </Component>
     </DirectoryRef>
 

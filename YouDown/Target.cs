@@ -29,16 +29,20 @@ namespace YouDown
             if (buffer.IndexOf("Error:") < 0 && buffer.IndexOf("/watch_fullscreen?") > 0)
             {
                 int start = 0, end = 0;
-                string startTag = "/watch_fullscreen?";
-                string endTag = ";";
+                string startTag = "var swfArgs";
+                string endTag = "};";
                 start = buffer.IndexOf(startTag, StringComparison.CurrentCultureIgnoreCase);
                 end = buffer.IndexOf(endTag, start, StringComparison.CurrentCultureIgnoreCase);
-                string str = buffer.Substring(start + startTag.Length, end - (start + startTag.Length));
-                string vid = str.Substring(str.IndexOf("video_id") + 9, str.IndexOf("&", str.IndexOf("video_id")) - str.IndexOf("video_id") - 9);
-                string l = str.Substring(str.IndexOf("&l") + 3, str.IndexOf("&", str.IndexOf("&l") + 1) - str.IndexOf("&l") - 3);
-                string t = str.Substring(str.IndexOf("&t") + 3, str.IndexOf("&", str.IndexOf("&t") + 1) - str.IndexOf("&t") - 3);
-                string title = str.Substring(str.IndexOf("&title=") + 7);
-                title = title.Substring(0, title.Length - 1);
+                string str = buffer.Substring(start, end - start).Replace(" ", "");
+
+                string vid = str.Substring(str.IndexOf("video_id\":\"") + 11, str.IndexOf("\",", str.IndexOf("video_id")) - str.IndexOf("video_id") - 11);
+                string l = str.Substring(str.IndexOf("\"l\":") + 4, str.IndexOf(",", str.IndexOf("\"l\":") + 1) - str.IndexOf("\"l\":") - 4);
+                string t = str.Substring(str.IndexOf("t\":\"") + 4, str.IndexOf("\",", str.IndexOf("t\":\"") + 2) - str.IndexOf("t\":\"") - 4);
+
+                int tstart = 0, tend = 0;
+                tstart = buffer.IndexOf("<title>") + 17;
+                tend = buffer.IndexOf("</title>");
+                string title = buffer.Substring(tstart, tend - tstart);
                 return new Video { Id = vid, Secret1 = l, Secret2 = t, Title = title };
             }
             else
