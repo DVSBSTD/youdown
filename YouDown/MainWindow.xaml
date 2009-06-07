@@ -1,0 +1,15 @@
+﻿<Window x:Class="YouDown.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="YouDown" Height="200" Width="400" ResizeMode="NoResize">
+    <Grid>
+        <WrapPanel VerticalAlignment="Top" Margin="10,15">
+            <TextBox Height="25" Width="220" Text="Filename" Margin="0,0,10,0" Name="FileText" TextChanged="FileText_TextChanged" />
+            <Button Content="Browse" Height="25" Width="50" Margin="0,0,10,0" Click="Browse_Click" />
+            <Button Content="Run" Height="25" Width="50" Click="Run_Click" Name="RunButton" />
+        </WrapPanel>
+        <Label Content="Select the file containing the list of videos" Margin="10,50,0,0" Name="StatusLabel" />
+        <ProgressBar Value="0" Height="20" Margin="10,15" VerticalAlignment="Bottom" Name="ProgressDown" />
+        <ProgressBar Value="0" Height="20" Margin="10,40" VerticalAlignment="Bottom" Name="Progress" />
+    </Grid>
+</Window>
